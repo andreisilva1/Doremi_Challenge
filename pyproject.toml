@@ -5,8 +5,10 @@ description = "Agente de atendimento da Empório da Música (desafio técnico AI
 readme = "README.md"
 requires-python = ">=3.11"
 # As dependências do agente (LangGraph e chat models) entram com versão fixa quando o agente
-# for construído. A base de dados e regras usa só a biblioteca padrão.
-dependencies = []
+# for construído. A base de dados e regras usa só a biblioteca padrão e o tzdata.
+dependencies = [
+    "tzdata>=2024.1",  # base de fusos horários; o Windows não traz
+]
 
 [project.optional-dependencies]
 dev = [

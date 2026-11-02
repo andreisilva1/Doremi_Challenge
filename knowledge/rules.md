@@ -49,7 +49,7 @@ Fonte: `§` = seção do manual de políticas. Verificação: **T** teste, **E**
 | FRE-01 | Campo Grande: grátis acima de R$ 500, senão R$ 35; 1–3 dias úteis 🟡 "região metropolitana" = Campo Grande | §5.1 | T |
 | FRE-02 | Valor do frete grátis conta após descontos 🟡 | §5.1 | T |
 | FRE-03 | Outras cidades: PAC 5–12, SEDEX 2–5, Jadlog 3–8 dias úteis; valor por CEP, não calculado | §5.2 | T |
-| FRE-04 | Baterias acústicas (139–141): frete especial com cotação 🟡 baixo elétrico não conta como contrabaixo | §5.2 | T |
+| FRE-04 | Fora de Campo Grande, bateria acústica, piano digital e contrabaixo acústico têm frete especial com cotação (no catálogo, só as baterias 139–141) 🟡 baixo elétrico não conta como contrabaixo | §5.2 | T |
 | FRE-05 | Rastreio: `BR` + 9 alfanuméricos + `BR` | §5.3 | T |
 | FRE-06 | Avaria na entrega: recusar o recebimento e contatar a loja | §5.2 | E |
 
