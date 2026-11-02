@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Configuração local (chaves de API)
+.env
+
+# Histórico de conversas persistido (contém dados pessoais)
+*.sqlite
+*.sqlite3
+*.db
+
+# Material de planejamento local, fora do repositório por decisão
+PLANO.md
+desafio_tecnico_ai_eng_artefact.pdf

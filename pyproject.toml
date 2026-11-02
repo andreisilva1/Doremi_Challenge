@@ -1,0 +1,32 @@
+[project]
+name = "emporio-da-musica-agent"
+version = "0.1.0"
+description = "Agente de atendimento da Empório da Música (desafio técnico AI Engineer, Artefact)"
+readme = "README.md"
+requires-python = ">=3.11"
+# As dependências do agente (LangGraph e chat models) entram com versão fixa quando o agente
+# for construído. A base de dados e regras usa só a biblioteca padrão.
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["emporio"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
