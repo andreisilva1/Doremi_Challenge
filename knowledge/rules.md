@@ -116,7 +116,7 @@ Vão para o relatório de dados; não mudam a resposta ao cliente.
 | DAD-01 | Total ≠ soma dos itens | pedidos 3, 20 | T |
 | DAD-02 | PIX sem os 5% no total | pedidos 1, 5, 10, 13, 17 | T |
 | DAD-03 | Parcela abaixo do mínimo | pedidos 9, 16, 18 | T |
-| DAD-04 | Promoção ativa não aplicada | pedido 11 | T |
+| DAD-04 | Promoção ativa não aplicada 🟡 promoção sem data, pode não valer no dia do pedido | pedidos 2, 11 | T |
 | DAD-05 | `coming_soon` vendido | produto 130 (pedidos 3, 14) | T |
 | DAD-06 | Descontinuado com estoque | produto 136 | T |
 | DAD-07 | E-mail duplicado | clientes 11, 43 | T |
