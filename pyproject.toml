@@ -4,10 +4,13 @@ version = "0.1.0"
 description = "Agente de atendimento da Empório da Música (desafio técnico AI Engineer, Artefact)"
 readme = "README.md"
 requires-python = ">=3.11"
-# As dependências do agente (LangGraph e chat models) entram com versão fixa quando o agente
-# for construído. A base de dados e regras usa só a biblioteca padrão e o tzdata.
 dependencies = [
     "tzdata>=2024.1",  # base de fusos horários; o Windows não traz
+    "python-dotenv==1.2.4",
+    "langgraph==1.2.19",
+    "langchain-core==1.7.3",
+    "langchain-ollama==1.1.0",
+    "langchain-anthropic==1.7.8",
 ]
 
 [project.optional-dependencies]
