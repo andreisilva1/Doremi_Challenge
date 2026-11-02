@@ -222,8 +222,7 @@ def check_return(order: Order, kind: str, today: date) -> ReturnCheck:
                 False,
                 deadline,
                 "prazo de troca na loja encerrado; acionar a garantia do fabricante, com a loja "
-                "intermediando se o cliente pedir "
-                f"(garantia legal até {legal_warranty_until(order)})",
+                "intermediando se o cliente pedir",
             )
         reason = "defeito de fabricação; mau uso, queda, umidade ou modificação não são cobertos"
     elif kind == PREFERENCE:
