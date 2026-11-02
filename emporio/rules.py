@@ -67,8 +67,6 @@ def can_combine_payments(total: Decimal) -> bool:
 class PaymentQuote:
     total: Decimal  # débito, boleto e crédito [PAG-03]
     pix_total: Decimal
-    max_installments: int
-    installment_value: Decimal
     can_combine: bool
 
 
@@ -77,8 +75,7 @@ def quote_payment(lines: Iterable[tuple[Decimal, bool, int]]) -> PaymentQuote:
     lines = list(lines)
     total = sum((price * qty for price, _, qty in lines), Decimal("0"))
     pix_total = sum((pix_price(price, promo) * qty for price, promo, qty in lines), Decimal("0"))
-    n = max_installments(total)
-    return PaymentQuote(total, pix_total, n, round_brl(total / n), can_combine_payments(total))
+    return PaymentQuote(total, pix_total, can_combine_payments(total))
 
 
 # Frete
@@ -92,7 +89,6 @@ CARRIERS = (
     ("SEDEX (Correios)", "2 a 5 dias úteis"),
     ("Jadlog", "3 a 8 dias úteis"),
 )
-TRACKING_FORMAT = "BR + 9 caracteres alfanuméricos + BR"
 
 
 @dataclass(frozen=True)
@@ -112,12 +108,6 @@ def shipping_quote(city: str, subtotal: Decimal, large_item: bool = False) -> Sh
         fee = Decimal("0") if subtotal > FREE_SHIPPING_ABOVE else LOCAL_FEE
         return ShippingQuote(True, fee, (("Motoboy próprio", LOCAL_DAYS),), False)
     return ShippingQuote(False, None, CARRIERS, large_item)
-
-
-def is_valid_tracking(code: str) -> bool:
-    """Formato do código de rastreio [FRE-05]."""
-    code = code.strip().upper()
-    return len(code) == 13 and code[:2] == code[-2:] == "BR" and code[2:11].isalnum()
 
 
 # Horário de funcionamento
@@ -184,7 +174,6 @@ REGRET, DEFECT, PREFERENCE = "arrependimento", "defeito", "preferencia"
 
 @dataclass(frozen=True)
 class ReturnCheck:
-    kind: str
     eligible: bool | None  # None: encaminhar para a equipe
     deadline: date | None
     reason: str
@@ -205,10 +194,10 @@ def check_return(order: Order, kind: str, today: date) -> ReturnCheck:
     """Elegibilidade de devolução ou troca na data `today` [DEV-01 a DEV-08]."""
     received = received_on(order)
     if received is None:
-        return ReturnCheck(kind, None, None, "pedido ainda não entregue; encaminhar para a equipe")
+        return ReturnCheck(None, None, "pedido ainda não entregue; encaminhar para a equipe")
     if kind == REGRET:
         if order.tracking_code is None:  # pedido com rastreio = compra online [DEV-03]
-            return ReturnCheck(kind, False, None, "arrependimento vale só para compra online")
+            return ReturnCheck(False, None, "arrependimento vale só para compra online")
         deadline = received + timedelta(days=REGRET_DAYS)
         reason = (
             "embalagem original, sem uso, com acessórios e manuais; reembolso na mesma forma de "
@@ -218,7 +207,6 @@ def check_return(order: Order, kind: str, today: date) -> ReturnCheck:
         deadline = order.order_date + timedelta(days=DEFECT_DAYS)
         if today > deadline:
             return ReturnCheck(
-                kind,
                 False,
                 deadline,
                 "prazo de troca na loja encerrado; acionar a garantia do fabricante, com a loja "
@@ -230,7 +218,7 @@ def check_return(order: Order, kind: str, today: date) -> ReturnCheck:
         reason = "sujeita à disponibilidade; produto perfeito e na embalagem original"
     else:
         raise ValueError(f"tipo de troca desconhecido: {kind!r}")
-    return ReturnCheck(kind, today <= deadline, deadline, reason)
+    return ReturnCheck(today <= deadline, deadline, reason)
 
 
 # Atendimento

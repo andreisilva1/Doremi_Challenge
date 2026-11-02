@@ -12,7 +12,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from functools import cache
 from pathlib import Path
-from typing import Literal, TypedDict
+from typing import Literal, TypedDict, get_args
 
 from emporio import catalog, orders, rules
 from emporio.config import reference_date, store_timezone
@@ -31,17 +31,8 @@ Topic = Literal[
     "garantia",
     "privacidade",
 ]
-TOPIC_SECTIONS: dict[str, str] = {
-    "loja": "§1",
-    "horario": "§2",
-    "pagamento": "§3",
-    "trocas": "§4",
-    "frete": "§5",
-    "promocoes": "§6",
-    "atendimento": "§7",
-    "garantia": "§8",
-    "privacidade": "§9",
-}
+# Os temas seguem a ordem das seções do manual: "loja" é o §1, "privacidade" o §9.
+TOPIC_SECTIONS = {topic: f"§{i}" for i, topic in enumerate(get_args(Topic), 1)}
 WEEKDAYS = ("segunda", "terça", "quarta", "quinta", "sexta", "sábado", "domingo")
 
 NOT_VERIFIED = (
@@ -82,16 +73,8 @@ def _format(value, key: str = ""):
 
 
 def _summary(product) -> dict:
-    s = store()
     info = {"id": product.id, "nome": product.name, "status": catalog.availability(product)}
-    if info["status"] in (catalog.AVAILABLE, catalog.OUT_OF_STOCK):
-        price = catalog.price_of(s, product)
-        info["preco"] = price.price
-        info["preco_pix"] = price.pix_price
-        if price.on_promotion:
-            info["preco_original"] = price.list_price
-            info["desconto_percent"] = price.discount_percent
-    return info
+    return info | catalog.price_fields(store(), product)
 
 
 def _installments(price: Decimal) -> str:
@@ -169,6 +152,7 @@ def quote(items: list[Item], city: str | None = None) -> dict:
         "total_pix": pay.pix_total,
         "cartao_credito": _installments(pay.total),
         "debito_ou_boleto": pay.total,
+        "boleto_compensacao": rules.BOLETO_CLEARING,
         "pode_combinar_formas": pay.can_combine,
     }
     if pay.pix_total == pay.total:

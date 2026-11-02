@@ -25,7 +25,6 @@ def test_parses_types(store):
     p = store.products[81]
     assert p.price == Decimal("599.9")
     assert p.specs["top"] == "Spruce"
-    assert p.created_at == date(2021, 3, 15)
     o = store.orders[3]
     assert o.items[0].quantity == 2
     assert o.estimated_delivery == date(2025, 12, 5)

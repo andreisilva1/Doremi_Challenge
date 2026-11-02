@@ -110,7 +110,6 @@ def _matches(query_tokens: set[str], haystack: set[str]) -> int:
 def search(
     store: Store,
     query: str = "",
-    category_id: int | None = None,
     min_price: Decimal | None = None,
     max_price: Decimal | None = None,
     limit: int = 8,
@@ -124,8 +123,6 @@ def search(
     query_tokens = _tokens(query)
     scored = []
     for p in store.products.values():
-        if category_id is not None and p.category_id != category_id:
-            continue
         price = price_of(store, p).price
         if (min_price is not None and price < min_price) or (
             max_price is not None and price > max_price
@@ -173,10 +170,19 @@ def empty_categories(store: Store) -> list[str]:
     return [c.name for c in store.categories.values() if c.id not in used]
 
 
+def price_fields(store: Store, product: Product) -> dict:
+    """Preço, PIX e promoção; vazio para produto fora de catálogo ou em breve."""
+    if availability(product) not in (AVAILABLE, OUT_OF_STOCK):
+        return {}
+    price = price_of(store, product)
+    info = {"preco": price.price, "preco_pix": price.pix_price}
+    if price.on_promotion:
+        info |= {"preco_original": price.list_price, "desconto_percent": price.discount_percent}
+    return info
+
+
 def describe(store: Store, product: Product) -> dict:
     """Ficha do produto para o agente, com specs em português."""
-    price = price_of(store, product)
-    status = availability(product)
     ended = [
         p.description for p in store.promotions if p.product_id == product.id and not p.is_active
     ]
@@ -184,20 +190,15 @@ def describe(store: Store, product: Product) -> dict:
         "id": product.id,
         "nome": product.name,
         "categoria": store.categories[product.category_id].name,
-        "status": status,
+        "status": availability(product),
         "specs": {
             SPEC_LABELS.get(k, k): SPEC_VALUES.get(str(v).lower(), v)
             for k, v in product.specs.items()
         },
     }
-    if status in (AVAILABLE, OUT_OF_STOCK):
-        info["preco"] = price.price
-        info["preco_pix"] = price.pix_price
-        if price.on_promotion:
-            info["preco_original"] = price.list_price
-            info["desconto_percent"] = price.discount_percent
-        if ended:
-            info["promocoes_encerradas"] = ended  # [PRO-03]
+    info |= price_fields(store, product)
+    if ended and "preco" in info:
+        info["promocoes_encerradas"] = ended  # [PRO-03]
     if product.id not in UNRELIABLE_DESCRIPTION:
         info["descricao"] = product.description
     return info

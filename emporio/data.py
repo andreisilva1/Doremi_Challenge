@@ -39,7 +39,6 @@ class Product:
     stock: int
     status: str
     specs: dict
-    created_at: date
 
 
 @dataclass(frozen=True)
@@ -57,7 +56,6 @@ class Customer:
     name: str
     phone: str
     email: str
-    city: str
 
 
 @dataclass(frozen=True)
@@ -104,13 +102,12 @@ def _optional(value: str) -> str | None:
     return value.strip() or None
 
 
-def _index(rows, key, label: str, problems: list[str]) -> dict:
+def _index(rows, label: str, problems: list[str]) -> dict:
     out = {}
     for row in rows:
-        k = getattr(row, key)
-        if k in out:
-            problems.append(f"{label} {k}: id duplicado")
-        out[k] = row
+        if row.id in out:
+            problems.append(f"{label} {row.id}: id duplicado")
+        out[row.id] = row
     return out
 
 
@@ -131,7 +128,6 @@ def load_store(data_dir: Path = DATA_DIR) -> Store:
                 stock=int(r["stock_quantity"]),
                 status=r["status"],
                 specs=json.loads(r["specs"]) if r["specs"].strip() else {},
-                created_at=date.fromisoformat(r["created_at"]),
             )
             for r in _read(data_dir, "products")
         ]
@@ -146,7 +142,7 @@ def load_store(data_dir: Path = DATA_DIR) -> Store:
             for r in _read(data_dir, "promotions")
         )
         customers = [
-            Customer(int(r["customer_id"]), r["name"], r["phone"], r["email"], r["city"])
+            Customer(int(r["customer_id"]), r["name"], r["phone"], r["email"])
             for r in _read(data_dir, "customers")
         ]
         items: dict[int, list[OrderItem]] = {}
@@ -178,11 +174,11 @@ def load_store(data_dir: Path = DATA_DIR) -> Store:
 
     problems: list[str] = []
     store = Store(
-        categories=_index(categories, "id", "categoria", problems),
-        products=_index(products, "id", "produto", problems),
+        categories=_index(categories, "categoria", problems),
+        products=_index(products, "produto", problems),
         promotions=promotions,
-        customers=_index(customers, "id", "cliente", problems),
-        orders=_index(orders, "id", "pedido", problems),
+        customers=_index(customers, "cliente", problems),
+        orders=_index(orders, "pedido", problems),
     )
     problems += [f"item do pedido {oid}: pedido inexistente" for oid in items]
     problems += _check(store)

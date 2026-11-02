@@ -54,7 +54,7 @@ def test_discontinued_with_stock_is_not_sold(store):
     assert product.stock > 0
     assert catalog.availability(product) == catalog.DISCONTINUED
     assert "preco" not in catalog.describe(store, product)
-    assert 136 not in _ids(catalog.search(store, category_id=2))
+    assert 136 not in _ids(catalog.search(store, limit=len(store.products)))
 
 
 def test_coming_soon_is_not_sold(store):

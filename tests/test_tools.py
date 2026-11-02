@@ -58,6 +58,13 @@ def test_quote_payment_and_local_shipping():
     assert result["frete"]["valor"] == "R$ 0,00"
 
 
+def test_quote_tells_boleto_clearing_time():
+    """PAG-03"""
+    result = tools.quote([{"product_id": 81, "quantity": 1}])
+    assert result["debito_ou_boleto"] == "R$ 599,90"
+    assert result["boleto_compensacao"] == "até 3 dias úteis"
+
+
 def test_quote_large_item_outside_campo_grande():
     """FRE-04"""
     result = tools.quote([{"product_id": 139, "quantity": 1}], "Dourados")
