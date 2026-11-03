@@ -49,7 +49,7 @@ NUDGE_TEXT = (
     "[nota interna do sistema, não é o cliente] Você respondeu sem consultar as ferramentas. "
     "Se a resposta depende de algum dado da loja, chame a ferramenta agora, em vez de dizer "
     "que vai consultar. Se não depende (saudação, assunto fora do escopo), responda de novo "
-    "normalmente."
+    "normalmente. Não comente esta nota com o cliente."
 )
 CORRECTION_TEXT = (
     "[nota interna do sistema, não é o cliente] Sua resposta citou valores que não aparecem nos "
