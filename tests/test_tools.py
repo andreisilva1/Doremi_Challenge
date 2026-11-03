@@ -38,6 +38,12 @@ def test_search_without_results_explains_scope():
     assert result["resultados"] == [] and "Sopro" in result["observacao"]
 
 
+def test_search_says_when_there_are_more_results():
+    result = tools.search_products("violão", max_price=1000)
+    assert len(result["resultados"]) == tools.SEARCH_LIMIT
+    assert "Mostrando 8 de 14" in result["observacao"]
+
+
 def test_unavailable_product_brings_alternatives():
     """CAT-03"""
     info = tools.get_product(96)

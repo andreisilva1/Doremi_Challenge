@@ -33,6 +33,8 @@ Topic = Literal[
 ]
 # Os temas seguem a ordem das seções do manual: "loja" é o §1, "privacidade" o §9.
 TOPIC_SECTIONS = {topic: f"§{i}" for i, topic in enumerate(get_args(Topic), 1)}
+# Resultados por busca: o bastante para escolher sem despejar o catálogo na conversa.
+SEARCH_LIMIT = 8
 WEEKDAYS = ("segunda", "terça", "quarta", "quinta", "sexta", "sábado", "domingo")
 
 NOT_VERIFIED = (
@@ -101,8 +103,16 @@ def search_products(
         query,
         min_price=Decimal(str(min_price)) if min_price is not None else None,
         max_price=Decimal(str(max_price)) if max_price is not None else None,
+        limit=len(s.products),
     )
-    result: dict = {"resultados": [_summary(p) for p in hits]}
+    shown = hits[:SEARCH_LIMIT]
+    result: dict = {"resultados": [_summary(p) for p in shown]}
+    if len(hits) > len(shown):  # sem o aviso, o modelo apresenta os 8 como a lista inteira
+        result["observacao"] = (
+            f"Mostrando {len(shown)} de {len(hits)} resultados, os disponíveis mais baratos "
+            "primeiro. Diga ao cliente que há mais opções e ofereça filtrar por tipo, marca ou "
+            "faixa de preço."
+        )
     if not hits:
         result["observacao"] = (
             "Nada encontrado. A loja vende só instrumentos (sem acessórios) e hoje não tem "
