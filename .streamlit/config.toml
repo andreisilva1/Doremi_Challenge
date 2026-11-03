@@ -1,0 +1,20 @@
+# Tema do chat: escuro, em tons de madeira.
+[theme]
+base = "dark"
+primaryColor = "#e0874f"
+backgroundColor = "#16110d"
+secondaryBackgroundColor = "#241b15"
+textColor = "#f2e9dd"
+borderColor = "#3a2d23"
+showWidgetBorder = true
+baseRadius = "large"
+headingFontWeights = 700
+
+[theme.sidebar]
+backgroundColor = "#1e1712"
+
+[client]
+toolbarMode = "minimal"
+
+[browser]
+gatherUsageStats = false

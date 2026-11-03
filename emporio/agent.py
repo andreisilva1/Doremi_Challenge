@@ -207,3 +207,17 @@ def reply(agent, thread_id: str, text: str) -> str:
     config = {"configurable": {"thread_id": thread_id}}
     state = agent.invoke({"messages": [HumanMessage(text)]}, config)
     return state["messages"][-1].text
+
+
+def trace(agent, thread_id: str) -> list[str]:
+    """Ferramentas chamadas e notas internas da última mensagem do cliente, para as interfaces."""
+    messages = agent.get_state({"configurable": {"thread_id": thread_id}}).values["messages"]
+    steps = []
+    for m in _turn(messages):
+        if isinstance(m, AIMessage):
+            for call in m.tool_calls:
+                args = ", ".join(f"{k}={v!r}" for k, v in call["args"].items())
+                steps.append(f"ferramenta: {call['name']}({args})")
+        elif is_note(m):
+            steps.append(f"nota interna: {m.additional_kwargs[NOTE]}")
+    return steps

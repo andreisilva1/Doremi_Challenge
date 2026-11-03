@@ -13,6 +13,7 @@ dependencies = [
     "langchain-anthropic==1.7.8",
     "langchain-openai==1.7.3",
     "langchain-deepseek==1.1.1",
+    "streamlit==1.66.1",
 ]
 
 [project.optional-dependencies]
