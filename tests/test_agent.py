@@ -170,6 +170,7 @@ def test_provider_defaults(monkeypatch):
     monkeypatch.delenv("LLM_MODEL", raising=False)
     chosen = llm.chat_model()
     assert (type(chosen).__name__, chosen.model) == ("ChatOllama", "qwen3.5:9b")
+    assert chosen.num_predict == 2048
 
 
 def test_anthropic_builds_without_network(monkeypatch):

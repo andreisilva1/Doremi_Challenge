@@ -28,6 +28,7 @@ def chat_model(provider: str | None = None, model: str | None = None) -> BaseCha
             base_url=os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434"),
             temperature=0,
             num_ctx=16384,  # o padrão do Ollama trunca o prompt com as ferramentas
+            num_predict=2048,  # sem teto, um laço de chamadas repetidas enche o contexto
             reasoning=False,
         )
     from langchain_anthropic import ChatAnthropic

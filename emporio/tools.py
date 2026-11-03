@@ -73,8 +73,12 @@ def _format(value, key: str = ""):
 
 
 def _summary(product) -> dict:
+    """Resumo de busca com PIX e cartão, para responder preço sem precisar de get_product."""
     info = {"id": product.id, "nome": product.name, "status": catalog.availability(product)}
-    return info | catalog.price_fields(store(), product)
+    info |= catalog.price_fields(store(), product)
+    if "preco" in info:
+        info["cartao_credito"] = _installments(info["preco"])
+    return info
 
 
 def _installments(price: Decimal) -> str:
@@ -159,14 +163,16 @@ def quote(items: list[Item], city: str | None = None) -> dict:
         result["observacao_pix"] = "itens em promoção não têm o desconto extra do PIX"
     if city:
         ship = rules.shipping_quote(city, pay.total, large)
+        if ship.local:
+            fee = ship.fee
+        elif ship.special_freight:
+            fee = "item de grande porte: frete especial com cotação individual pela equipe"
+        else:
+            fee = "calculado no checkout pelo CEP, peso e dimensões"
         result["frete"] = {
             "modalidades": [f"{name}: {days}" for name, days in ship.options],
-            "valor": ship.fee if ship.local else "calculado no checkout pelo CEP, peso e dimensões",
+            "valor": fee,
         }
-        if ship.special_freight:
-            result["frete"]["frete_especial"] = (
-                "item de grande porte: frete especial com cotação individual pela equipe"
-            )
     return _format(result)
 
 

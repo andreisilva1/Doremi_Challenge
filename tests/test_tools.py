@@ -23,6 +23,7 @@ def test_search_returns_formatted_summaries():
         "preco_pix": "R$ 323,10",
         "preco_original": "R$ 359,00",
         "desconto_percent": "10%",
+        "cartao_credito": "até 4x de R$ 80,78 sem juros",
     }
 
 
@@ -68,7 +69,8 @@ def test_quote_tells_boleto_clearing_time():
 def test_quote_large_item_outside_campo_grande():
     """FRE-04"""
     result = tools.quote([{"product_id": 139, "quantity": 1}], "Dourados")
-    assert "frete_especial" in result["frete"]
+    assert "cotação individual" in result["frete"]["valor"]
+    assert "checkout" not in result["frete"]["valor"]
 
 
 def test_quote_refuses_unavailable_or_excess():
