@@ -12,5 +12,6 @@
 - Mudou uma regra: atualizar `knowledge/rules.md` e o teste juntos.
 - Regras de negócio sem dependência de LangChain; as ferramentas só as embrulham.
 - Código, nomes e commits em inglês (Conventional Commits). Comentários e docstrings em pt-BR.
-- Commits pequenos, um por mudança lógica. Nunca force-push.
+- Commits pequenos, um por mudança lógica. Sem force-push que achate o histórico; nada muda depois do
+  prazo.
 - Antes de concluir: `pytest` e `ruff check .` passando.

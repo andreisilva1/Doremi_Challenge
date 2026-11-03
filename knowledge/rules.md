@@ -105,7 +105,7 @@ Fonte: `§` = seção do manual de políticas. Verificação: **T** teste, **E**
 | ATD-06 | Fora do escopo: recusa gentil e volta ao atendimento | enunciado | E |
 | LGPD-01 | Não confirmar cadastro nem mostrar dados de outro cliente | §9 | T |
 | LGPD-02 | Exclusão de dados: via WhatsApp ou e-mail | §9 | E |
-| LGPD-03 | Histórico de conversa persistido: o que guarda e como apagar | §9 | D |
+| LGPD-03 | Histórico só em memória, nada vai para disco; reiniciar o processo apaga | §9 | D |
 
 ## Inconsistências dos dados
 

@@ -5,8 +5,8 @@ Fluxo de cada mensagem do cliente:
     agent -> tools -> agent ... -> check -> fim
                                      \\-> agent (nota interna pedindo para refazer)
 
-- Se a resposta sai sem nenhuma consulta, o check pede uma vez que consulte. Nem o Claude 5.5
-  nem o Ollama aceitam obrigar o modelo a chamar uma ferramenta (tool_choice).
+- Se a resposta sai sem nenhuma consulta, o check pede uma vez que consulte. Obrigar a chamada
+  (tool_choice) seria errado para saudação e fora do escopo, e o Ollama não aceita.
 - Todo R$, parcela (Nx) e data da resposta precisa aparecer nos resultados das ferramentas
   da conversa ou no que o cliente escreveu. Se não aparece, o check pede para refazer uma vez;
   na segunda falha, troca a resposta por uma mensagem fixa que oferece a equipe.
