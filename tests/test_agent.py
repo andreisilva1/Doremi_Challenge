@@ -181,6 +181,14 @@ def test_anthropic_builds_without_network(monkeypatch):
     assert llm.chat_model("anthropic").model == "claude-haiku-5-5"
 
 
+def test_openai_and_deepseek_build_without_network(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "test-key")
+    monkeypatch.delenv("LLM_MODEL", raising=False)
+    assert llm.label(llm.chat_model("openai")) == "ChatOpenAI: gpt-5.4-mini"
+    assert llm.label(llm.chat_model("deepseek")) == "ChatDeepSeek: deepseek-flash"
+
+
 def test_unknown_provider():
     with pytest.raises(ValueError, match="LLM_PROVIDER"):
-        llm.chat_model("openai")
+        llm.chat_model("gemini")

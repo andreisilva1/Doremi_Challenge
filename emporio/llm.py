@@ -9,6 +9,8 @@ from langchain_core.language_models import BaseChatModel
 DEFAULT_MODELS = {
     "ollama": "qwen3.5:9b",
     "anthropic": "claude-sonnet-5-5",
+    "openai": "gpt-5.4-mini",
+    "deepseek": "deepseek-flash",
 }
 
 
@@ -31,6 +33,20 @@ def chat_model(provider: str | None = None, model: str | None = None) -> BaseCha
             num_predict=2048,  # sem teto, um laço de chamadas repetidas enche o contexto
             reasoning=False,
         )
+    if provider == "openai":
+        from langchain_openai import ChatOpenAI
+
+        return ChatOpenAI(model=name)  # os GPT-5 de raciocínio recusam temperature
+    if provider == "deepseek":
+        from langchain_deepseek import ChatDeepSeek
+
+        return ChatDeepSeek(model=name, temperature=0)
     from langchain_anthropic import ChatAnthropic
 
     return ChatAnthropic(model=name, max_tokens=16000)  # os Claude 5.5 recusam temperature
+
+
+def label(model: BaseChatModel) -> str:
+    """Classe e modelo para as interfaces; OpenAI e DeepSeek guardam o nome em model_name."""
+    name = getattr(model, "model_name", None) or getattr(model, "model", "")
+    return f"{type(model).__name__}: {name}"
